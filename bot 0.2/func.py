@@ -14,6 +14,15 @@ def step_day():
         else:
             stip = date.fromisoformat(tstr[:5] + str(int(tstr[5:-3]) + 1) + "-25")
     daystip=(stip - t).days
+
+    dney=""
+    if daystip in [1,21,31]:
+        dney="день"
+    elif daystip in [2,3,4,22,23,24]:
+        dney="дня"
+    else:
+        dney="дней"
+
     if daystip>20:
         com="ㅤㅤㅤЕще очинь долго((( ТРЭШ"
     elif daystip<=20 and daystip>=10:
@@ -22,7 +31,7 @@ def step_day():
         com = "Еще примерно недельку протянуть Ура!!!!"
     else:
         com = "ㅤㅤУже совсем скоро!!!"
-    stroke=(f"ㅤㅤㅤㅤДо стипендии {daystip} дней!\n"
+    stroke=(f"ㅤㅤㅤㅤДо стипендии {daystip} {dney}!\n"
             f"===============↓↓↓===============\n"
                             +com)
     return stroke
@@ -71,6 +80,15 @@ def nazvanie_admina2(uroven):
     else:
         return "нет такого"
 
+def name_in_db(name):
+    cursor = db.cursor()
+    res = cursor.execute("""SELECT name From user WHERE name=(?)""", (name,)).fetchone()
+    print(res)
+    if res==None:
+        return True
+    else:
+        return False
+
 
 def level_admin(id):
     cursor = db.cursor()
@@ -108,7 +126,7 @@ def admin_vision_grope(id):
 def admin_vision():
     cursor = db.cursor()
     res = cursor.execute("""SELECT id,name,admin,grope From user""").fetchall()
-    stroke=""
+    stroke="(При некоректном отображении переверните телефон)\n"
     m0,m1,m2 = 2,3,5
     for i in res:
         m0=max(m0,len(str(i[0])))

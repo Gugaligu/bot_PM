@@ -44,8 +44,9 @@ async def Start(message: Message):
                 func.menu(message.chat.id, message.chat.first_name, message.chat.username),
                 reply_markup=kb.admin_menu_ss)
         else:
-            await message.message.answer("вы не зарегистрированы\n"
-                                             "или не имеете прав (/start)")
+            await message.answer("ㅤㅤЗарегистрируйтесь\n"
+                             "===========↓===========",
+                             reply_markup=kb.reg)
     else:
         await message.answer("ㅤㅤЗарегистрируйтесь\n"
                              "===========↓===========",
@@ -55,44 +56,58 @@ async def Start(message: Message):
 @router.callback_query(F.data=="reg")
 async def Filterr(callback: CallbackQuery,state:FSMContext):
     await state.set_state(registrationclass.name)
-    await callback.answer("1 этап")
-    print(callback.message.message_id)
-    await callback.message.edit_text("Отправьте сообщение с именем")
-    await callback.message.edit_reply_markup(reply_markup=kb.pust)
-    await asyncio.sleep(15)
-    await callback.message.delete()
+    await callback.message.edit_text("отправте свое имя\n"
+                                     "1)желательно до 11 символов\n"
+                                     "2)имя может быть занято так-что пишите с фамилией\n\n"
+                                     "Например:Абобикс В.\n\n"
+                                     "(сообщение будет сохранено и удалено, не пугайтесь!)",
+                                     reply_markup=kb.reg_name)
 
 @router.message(registrationclass.name)
 async def reg_name(message: Message, state:FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(registrationclass.grope)
+    await asyncio.sleep(5)
     await message.delete()
-    await message.answer("выбери группу",reply_markup=kb.grope)
 
-#ЧТО БЛЯТЬ?
+@router.callback_query(F.data=="reg_name")
+async def Filterr(callback: CallbackQuery,state:FSMContext):
+    data = await state.get_data()
+    await callback.message.edit_text("Здравствуйте "+data["name"]+"\nвыберите группу",reply_markup=kb.grope)
+    await state.set_state(registrationclass.grope)
+
 @router.callback_query(registrationclass.grope)
 async def reg_grope(callback: CallbackQuery, state: FSMContext):
     await state.update_data(grope=callback.data)
     data = await state.get_data()
-    func.registration(callback.message.chat.id,data["name"],data["grope"])
-    await state.clear()
-    await asyncio.sleep(1)
-    level = func.level_admin(callback.message.chat.id)
-    if level == 1:
-        await callback.message.edit_text(
-            func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
-            reply_markup=kb.menu)
-    elif level == 2:
-        await callback.message.edit_text(
-            func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
-            reply_markup=kb.admin_menu)
-    elif level == 3:
-        await callback.message.edit_text(
-            func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
-            reply_markup=kb.admin_menu_ss)
+    if func.name_in_db(str(data["name"])):
+        func.registration(callback.message.chat.id,data["name"],data["grope"])
+
+
+
+        level = func.level_admin(callback.message.chat.id)
+        if level == 1:
+            await callback.message.edit_text(
+                func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
+                reply_markup=kb.menu)
+        elif level == 2:
+            await callback.message.edit_text(
+                func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
+                reply_markup=kb.admin_menu)
+        elif level == 3:
+            await callback.message.edit_text(
+                func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
+                reply_markup=kb.admin_menu_ss)
+        else:
+            await callback.message.edit_text("ㅤㅤЗарегистрируйтесь\n"
+                                             "===========↓===========",
+                                             reply_markup=kb.reg)
+
+
     else:
-        await callback.message.edit_text("вы не зарегистрированы\n"
-                                         "или не имеете прав (/start)")
+        await callback.message.edit_text(data["name"]+"-это имя занято или слишком большое",
+            reply_markup=kb.Backmebu)
+    await state.clear()
 
 @router.callback_query(F.data=="Меню Админа")
 async def Admin(callback: CallbackQuery):
@@ -248,7 +263,8 @@ async def dock(callback: CallbackQuery):
 
 #возврат к меню
 @router.callback_query(F.data=="back1")
-async def back(callback: CallbackQuery):
+async def back(callback: CallbackQuery,state:FSMContext):
+    await state.clear()
     await callback.answer("Back")
     level = func.level_admin(callback.message.chat.id)
     if level == 1:
@@ -264,5 +280,6 @@ async def back(callback: CallbackQuery):
             func.menu(callback.message.chat.id, callback.message.chat.first_name, callback.message.chat.username),
             reply_markup=kb.admin_menu_ss)
     else:
-        await callback.message.edit_text("вы не зарегистрированы\n"
-                                         "или не имеете прав (/start)")
+        await callback.message.edit_text("ㅤㅤЗарегистрируйтесь\n"
+                                         "===========↓===========",
+                                             reply_markup=kb.reg)

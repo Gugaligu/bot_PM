@@ -12,6 +12,9 @@ Backmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="bac
 
 reg = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="регистрация",callback_data="reg")]])
 
+reg_name = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить имя",callback_data="reg_name")],
+                                                 [InlineKeyboardButton(text="back",callback_data="back1")]])
+
 grope = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="ПМ",callback_data="PM")]])
 
 pust = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="....",callback_data=".")]])
