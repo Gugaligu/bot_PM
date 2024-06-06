@@ -6,7 +6,7 @@ import keyboard as kb
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 import func
-from datetime import date
+import f_raspis
 from aiogram import Bot
 TOKEN_API = "6662629827:AAHoIxMjnrbtSLX2W7Pw3ARqbAjf_xq8QbI"
 bot1 = Bot(TOKEN_API)
@@ -84,7 +84,6 @@ async def reg_grope(callback: CallbackQuery, state: FSMContext):
         func.registration(callback.message.chat.id,data["name"],data["grope"])
 
 
-
         level = func.level_admin(callback.message.chat.id)
         if level == 1:
             await callback.message.edit_text(
@@ -109,6 +108,28 @@ async def reg_grope(callback: CallbackQuery, state: FSMContext):
             reply_markup=kb.Backmebu)
     await state.clear()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @router.callback_query(F.data=="Меню Админа")
 async def Admin(callback: CallbackQuery):
     await callback.message.edit_text("Меню Админа", reply_markup=kb.funckadmin)
@@ -125,6 +146,39 @@ async def Admin(callback: CallbackQuery):
 async def Admin(callback: CallbackQuery):
     await callback.message.edit_text(func.admin_vision(),
                                      reply_markup = kb.Backmebu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @router.callback_query(F.data=="удалить из группы")
 async def Admin(callback: CallbackQuery,state:FSMContext):
@@ -151,18 +205,35 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
         func.del_in_groupe(callback.message.chat.id,data["number"])
         await state.clear()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @router.callback_query(F.data=="удалить ученика")
 async def Admin(callback: CallbackQuery,state:FSMContext):
     await state.set_state(del_chel.number)
     await callback.message.edit_text(func.admin_vision()+'\nвведите номер',
-                                     reply_markup = kb.delete_user)
+                                     reply_markup = kb.delete_user_ss)
 @router.message(del_chel.number)
 async def reg_name(message: Message, state:FSMContext):
         await state.update_data(number=message.text)
         await asyncio.sleep(5)
         await message.delete()
 
-@router.callback_query(F.data=="удалить ученика")
+@router.callback_query(F.data=="удалитьss")
 async def Admin(callback: CallbackQuery,state:FSMContext):
     data = await state.get_data()
     if not(data["number"].isdigit()):
@@ -175,6 +246,17 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
         await callback.message.edit_text("ученик удален", reply_markup=kb.Backmebu)
         func.del_in_groupe(func.po_id_tg_id(data["number"]),data["number"])
         await state.clear()
+
+
+
+
+
+
+
+
+
+
+
 
 @router.callback_query(F.data=="сделать админом")
 async def Admin(callback: CallbackQuery,state:FSMContext):
@@ -203,43 +285,18 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
         await callback.message.edit_text("введите номер!",reply_markup = kb.Backmebu)
 
 
-#выбор расписания в меню
-@router.callback_query(F.data=="расписание")
-async def rasp(callback: CallbackQuery):
-    await callback.answer("вы выбрали раписание")
-    await callback.message.edit_text("Расписание пар\n"
-                                     "-----------------------------------------------\n"
-                                     "Понедельник\n"
-                                     "  1)История до 38 недели\n"
-                                     "  2)Алгебра\n"
-                                     "-----------------------------------------------\n"
-                                     "Вторник\n"
-                                     "  1)Дискретка\n"
-                                     "  2)Б.Ж\n"
-                                     "  3)История\n"
-                                     "  4)Английский\n"
-                                     "-----------------------------------------------\n"
-                                     "Среда\n"
-                                     "  1)История до 38 недели\n"
-                                     "  2)Б.Ж\n"
-                                     "  3)Программирование\n"
-                                     "-----------------------------------------------\n"
-                                     "Четверг\n"
-                                     "  1)Дискретка\n"
-                                     "  2)Русский\n"
-                                     "  3)Мат. Анализ\n"
-                                     "-----------------------------------------------\n"
-                                     "Пятница\n"
-                                     "  1)ЭВМ\n"
-                                     "  2)Мат. Анализ\n"
-                                     "  3)Информатика\n"
-                                     "-----------------------------------------------\n"
-                                     "Суббота\n"
-                                     "  прошли уже\n"
-                                     "-----------------------------------------------\n"
-                                     "Воскресенье\n"
-                                     "  нету")
-    await callback.message.edit_reply_markup(reply_markup=kb.Backmebu)
+
+
+
+
+
+
+
+
+
+
+
+
 
 #выбор стипендии в меню
 @router.callback_query(F.data=="стипендия")
@@ -260,6 +317,14 @@ async def dock(callback: CallbackQuery):
     await callback.answer("вы выбрали полезные документы")
     await callback.message.edit_text("полезных документов пока не загружено!")
     await callback.message.edit_reply_markup(reply_markup=kb.Backmebu)
+
+
+
+
+
+
+
+
 
 #возврат к меню
 @router.callback_query(F.data=="back1")
@@ -282,4 +347,4 @@ async def back(callback: CallbackQuery,state:FSMContext):
     else:
         await callback.message.edit_text("ㅤㅤЗарегистрируйтесь\n"
                                          "===========↓===========",
-                                             reply_markup=kb.reg)
+                                         reply_markup=kb.reg)

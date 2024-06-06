@@ -98,9 +98,9 @@ def level_admin(id):
         return 0
     return res[0]
 
-def grope(id):
+def grope(id_tg):
     cursor = db.cursor()
-    res = cursor.execute("""SELECT grope From user WHERE tg_id=(?)""", (id,)).fetchone()
+    res = cursor.execute("""SELECT grope From user WHERE tg_id=(?)""", (id_tg,)).fetchone()
     return res[0]
 def admin_vision_grope(id):
     g=grope(id)
@@ -148,7 +148,7 @@ def del_in_groupe(id,nomer):
     res1 = cursor.execute("""SELECT grope From user WHERE grope=(?)""", (grope(id),)).fetchone()
     cursor = db.cursor()
     res2 = cursor.execute("""SELECT grope From user WHERE id=(?)""", (nomer,)).fetchone()
-    if res1[0]==res2[0] and (res2!="супер" or res2!="да"):
+    if res1[0]==res2[0] and (res2=="создатель" or res2=="староста"):
         cursor = db.cursor()
         res1 = cursor.execute("""delete FROM user WHERE id=(?)""", (nomer,))
         db.commit()

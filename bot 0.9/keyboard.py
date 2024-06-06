@@ -44,5 +44,25 @@ funckadmin_SS=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="
 delete_user=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="удалить")],
                                                   [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
 
-sdelat_adminom_user=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="сделать админом пров")],
+delete_user_ss=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="удалитьss")],
+                                                  [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+sdelat_adminom_user_ss=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="сделать админом пров")],
+                                                  [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+raspis_menu=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="<-",callback_data="<-"),InlineKeyboardButton(text="изменить",callback_data="изменить"),InlineKeyboardButton(text="->",callback_data="->")],
+                                                  [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+izmenit=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="создать расписание",callback_data="создать расписание")],
+                                                    [InlineKeyboardButton(text="изменить расписание",callback_data="изменить расписание")],
+                                                    [InlineKeyboardButton(text="удалить расписание",callback_data="удалить расписание")],
+                                                        [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+sozdat_rasp=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="пров созд")],
+                                                  [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+izmen_rasp=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="пров изменение")],
+                                                  [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
+
+del_raspis=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="пров удаление")],
                                                   [InlineKeyboardButton(text="Отмена",callback_data="back1")]])
