@@ -38,13 +38,11 @@ def step_day():
 def registration(id, name, grope):
     cursor = db.cursor()
     res = cursor.execute("""INSERT INTO user(tg_id,name,grope) VALUES((?),(?),(?))""", (id,name,grope,))
-    print(res)
     db.commit()
     pass
 def prov_registration(id):
     cursor = db.cursor()
     res = cursor.execute("""SELECT tg_id From user WHERE tg_id=(?)""", (id,)).fetchone()
-    print(res)
     return res != None
 def menu(id,first_name,username):
     cursor = db.cursor()
@@ -83,7 +81,6 @@ def nazvanie_admina2(uroven):
 def name_in_db(name):
     cursor = db.cursor()
     res = cursor.execute("""SELECT name From user WHERE name=(?)""", (name,)).fetchone()
-    print(res)
     if res==None:
         return True
     else:
@@ -93,7 +90,6 @@ def name_in_db(name):
 def level_admin(id):
     cursor = db.cursor()
     res = cursor.execute("""SELECT admin From user WHERE tg_id=(?)""", (id,)).fetchone()
-    print(res)
     if res==None:
         return 0
     return res[0]

@@ -31,7 +31,6 @@ async def Start(message: Message):
     if func.prov_registration(message.chat.id):
         level = func.level_admin(message.chat.id)
         if level == 1:
-            print(message)
             await message.answer(
                 func.menu(message.chat.id, message.chat.first_name, message.chat.username),
                 reply_markup=kb.menu)
@@ -56,7 +55,7 @@ async def Start(message: Message):
 @router.callback_query(F.data=="reg")
 async def Filterr(callback: CallbackQuery,state:FSMContext):
     await state.set_state(registrationclass.name)
-    await callback.message.edit_text("отправте свое имя\n"
+    await callback.message.edit_text("отправьте свое имя\n"
                                      "1)желательно до 11 символов\n"
                                      "2)имя может быть занято так-что пишите с фамилией\n\n"
                                      "Например:Абобикс В.\n\n"
@@ -262,7 +261,7 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
 async def Admin(callback: CallbackQuery,state:FSMContext):
     await state.set_state(admin_sdelat.number)
     await callback.message.edit_text(func.admin_vision()+'\nвведите номер',
-                                     reply_markup = kb.sdelat_adminom_user)
+                                     reply_markup = kb.sdelat_adminom_user_ss)
 
 @router.message(admin_sdelat.number)
 async def reg_name(message: Message, state:FSMContext):
