@@ -19,11 +19,12 @@ class raspisanie(StatesGroup):
 @raspis.callback_query(F.data=="расписание")
 async def rasp(callback: CallbackQuery):
     ras=f_raspis.raspisne(callback.message.chat.id)
+    c=0
     if len(ras)!=0:
         await callback.answer("вы выбрали раписание")
         c=str(ras[0][1])
-        level = func.level_admin(callback.message.chat.id)
-        raspis_menu_strelka = f_raspis.level_dly_menu(level,c)
+    level = func.level_admin(callback.message.chat.id)
+    raspis_menu_strelka = f_raspis.level_dly_menu(level,c)
     if len(ras)!=0:
         await callback.message.edit_text(f_raspis.vivod_ras(ras),reply_markup=raspis_menu_strelka)
     else:
@@ -49,68 +50,35 @@ async def rasp(callback: CallbackQuery):
 
 
 #<-
-@raspis.callback_query(F.data[:-2]=="<-")
+@raspis.callback_query(F.data[:-2].in_({'<-', '<', '>-', '>'}))
 async def rasp(callback: CallbackQuery):
-    print("АБОБА")
-    c=int(callback.data[-2:])-1
-    ras=f_raspis.raspisnie_strelochki(callback.message.chat.id,c)
+    print(callback.data)
+    if callback.data[:-2]=="<-":
+        c=int(callback.data[-2:])-1
+    elif callback.data[:-2]=="<":
+        c = int(callback.data[-1]) - 1
+    elif callback.data[:-2]==">-":
+        c = int(callback.data[-2:]) + 1
+    elif callback.data[:-2]==">":
+        c = int(callback.data[-1]) + 1
+    else:
+        c=""
+        await callback.message.edit_text("чтото пошло нетак",reply_markup=kb.Backmebu)
+    ras=f_raspis.raspisnie_strelochki(callback.message.chat.id, c)
     level = func.level_admin(callback.message.chat.id)
     raspis_menu_strelka=f_raspis.level_dly_menu(level,c)
     if len(ras) != 0:
         await callback.message.edit_text(f_raspis.vivod_ras(ras), reply_markup=raspis_menu_strelka)
-    elif c<1:
-        await callback.message.edit_text("такой недели нет",reply_markup=kb.Backmebu)
-    else:
-        await callback.message.edit_text(
-                f"расписания {f_raspis.grope(callback.message.chat.id)} несуществует создайте его",
-                reply_markup=kb.sozdat_ras1)
-    await asyncio.sleep(1)
-@raspis.callback_query(F.data[:-2]=="<")
-async def rasp(callback: CallbackQuery):
-    c=int(callback.data[-1])-1
-    ras=f_raspis.raspisnie_strelochki(callback.message.chat.id,c)
-    level = func.level_admin(callback.message.chat.id)
-    raspis_menu_strelka = f_raspis.level_dly_menu(level,c)
-    if len(ras) != 0:
-        await callback.message.edit_text(f_raspis.vivod_ras(ras), reply_markup=raspis_menu_strelka)
-    elif c<1:
-        await callback.message.edit_text("такой недели нет",reply_markup=kb.Backmebu)
-    else:
-        await callback.message.edit_text(
-                f"расписания {f_raspis.grope(callback.message.chat.id)} несуществует создайте его",
-                reply_markup=kb.sozdat_ras1)
-    await asyncio.sleep(1)
-#->
-@raspis.callback_query(F.data[:-2]==">-")
-async def rasp(callback: CallbackQuery):
-    c=int(callback.data[-2:])+1
-    ras=f_raspis.raspisnie_strelochki(callback.message.chat.id,c)
-    level = func.level_admin(callback.message.chat.id)
-    raspis_menu_strelka = f_raspis.level_dly_menu(level,c)
-    if len(ras) != 0:
-        await callback.message.edit_text(f_raspis.vivod_ras(ras), reply_markup=raspis_menu_strelka)
-    elif c>45:
-        await callback.message.edit_text("такой недели нет",reply_markup=kb.Backmebu)
-    else:
-        await callback.message.edit_text(
-                f"расписания {f_raspis.grope(callback.message.chat.id)} несуществует создайте его",
-                reply_markup=kb.sozdat_ras1)
-    await asyncio.sleep(1)
-@raspis.callback_query(F.data[:-2]==">")
-async def rasp(callback: CallbackQuery):
-    c=int(callback.data[-1])+1
-    ras=f_raspis.raspisnie_strelochki(callback.message.chat.id,c)
-    level = func.level_admin(callback.message.chat.id)
-    raspis_menu_strelka = f_raspis.level_dly_menu(level,c)
-    if len(ras) != 0:
-        await callback.message.edit_text(f_raspis.vivod_ras(ras), reply_markup=raspis_menu_strelka)
-    elif c > 45:
+    elif c<1 and callback.data[:-2]=="<-" or callback.data[:-2]=="<":
         await callback.message.edit_text("такой недели нет", reply_markup=kb.Backmebu)
+    elif c > 45 and callback.data[:-2]==">-" or callback.data[:-2]==">":
+        await callback.message.edit_text("такой недели нет",reply_markup=kb.Backmebu)
     else:
         await callback.message.edit_text(
                 f"расписания {f_raspis.grope(callback.message.chat.id)} несуществует создайте его",
                 reply_markup=kb.sozdat_ras1)
     await asyncio.sleep(1)
+
 
 
 
