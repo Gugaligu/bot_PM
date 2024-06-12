@@ -4,6 +4,14 @@ db = sqlite3.connect("../data/db.db")
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            InlineKeyboardMarkup,InlineKeyboardButton)
 
+def flevel_admin(id):
+    cursor = db.cursor()
+    res = cursor.execute("""SELECT admin From user WHERE tg_id=(?)""", (id,)).fetchone()
+    if res==None:
+        return 0
+    return res[0]
+
+
 def level_dly_menu(level,c):
     if level>1:
         return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-"+str(c))),
@@ -11,11 +19,11 @@ def level_dly_menu(level,c):
                                                                                   callback_data="изменить"),
                                                              InlineKeyboardButton(text="->", callback_data=(">-"+str(c)))],
                                                             [InlineKeyboardButton(text="Отмена",
-                                                                                  callback_data="back1")]])
+                                                                                  callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
             inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-" + str(c))),
-                              InlineKeyboardButton(text="Отмена",callback_data="back1"),
+                              InlineKeyboardButton(text="Отмена",callback_data="menu"),
                               InlineKeyboardButton(text="->", callback_data=(">-" + str(c)))]])
 
 def vivod_ras(ras):
