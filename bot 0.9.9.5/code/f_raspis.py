@@ -15,16 +15,16 @@ def flevel_admin(id):
 def level_dly_menu(level,c):
     if level>1:
         return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-"+str(c))),
-                                                             InlineKeyboardButton(text="изменить",
-                                                                                  callback_data="изменить"),
-                                                             InlineKeyboardButton(text="->", callback_data=(">-"+str(c)))],
-                                                            [InlineKeyboardButton(text="Отмена",
-                                                                                  callback_data="menu")]])
+                                                        InlineKeyboardButton(text="изменить",callback_data="изменить"),
+                                                        InlineKeyboardButton(text="->", callback_data=(">-"+str(c)))],
+                                                [InlineKeyboardButton(text="создать вопросы", callback_data="создать вопросы vopr")],
+                                                        [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
             inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-" + str(c))),
                               InlineKeyboardButton(text="Отмена",callback_data="menu"),
-                              InlineKeyboardButton(text="->", callback_data=(">-" + str(c)))]])
+                              InlineKeyboardButton(text="->", callback_data=(">-" + str(c)))],
+                                [InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")]])
 
 def vivod_ras(ras):
     return f"""--------------ПОНЕДЕЛЬНИК--------------
