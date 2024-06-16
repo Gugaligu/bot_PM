@@ -18,6 +18,7 @@ class voprstate(StatesGroup):
     days = State()
     urok = State()
     count_vopr = State()
+    photo_id = State()
 
 @voprosik.callback_query(F.data=="создать вопросы vopr")
 async def rasp(callback: CallbackQuery,state:FSMContext):
@@ -47,17 +48,34 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
 
 @voprosik.message(voprstate.count_vopr)
 async def freg_name(message: Message, state:FSMContext):
-    await state.update_data(name=message.text)
+    await state.update_data(count_vopr=message.text)
     await asyncio.sleep(5)
     await message.delete()
 
 @voprosik.callback_query(F.data=="pr_colvo")
 async def rasp(callback: CallbackQuery,state:FSMContext):
-    await callback.message.edit_text("недоделал", reply_markup=kBackmebu)
+    await callback.message.edit_text("отправьте фото вопросов", reply_markup=prov_photo)
+    await state.set_state(voprstate.photo_id)
+
+@voprosik.message(voprstate.photo_id)
+async def freg_name(message: Message, state:FSMContext):
+    p=(str(message.photo[-1])[9:])
+    p1=p[:p.find("'")]
+    await state.update_data(photo_id=p1)
+    print(p1)
+    await asyncio.sleep(5)
+    await message.delete()
 
 
 
 
+@voprosik.callback_query(F.data=="pr_photo")
+async def rasp(callback: CallbackQuery,state:FSMContext):
+    date1 = await state.get_data()
+    await callback.message.edit_text(f"недоделал({date1['nedel']},{date1['days']},{date1['urok']},{date1['count_vopr']},{date1['photo_id']})", reply_markup=kBackmebu)
+# разнообразие обеспечивается количеством вопросов тоесть к уроку приписывать количество каждый может забрать
+# хоть все вопросы но только 1 раз не(1:Артем,Артем,Артем.....)
+# генерируем кнопки(номера вопросов с исключением что уже взял этот вопрос)
 
 
 
@@ -89,4 +107,6 @@ day = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="поне
                                             [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
 kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти", callback_data="menu")]])
 pr_colvo_vopr = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить", callback_data="pr_colvo")],
+                                            [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+prov_photo = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить", callback_data="pr_photo")],
                                             [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
