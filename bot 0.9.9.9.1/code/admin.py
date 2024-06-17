@@ -159,7 +159,7 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
     if data["number"].isdigit():
         await callback.message.edit_text("статус выдан", reply_markup=kBackmebu)
         f_admin.fsdelat_adminom(data["number"])
-        await bot1.send_message(f_admin.fpo_id_tg_id(data["number"]), 'вы стали админом!')
+        await bot1.send_message(f_admin.fpo_id_tg_id(data["number"]), 'вы стали админом!',reply_markup=udal_soob)
         await asyncio.sleep(5)
         await callback.message.delete()
         await state.clear()
@@ -168,7 +168,9 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
         await callback.message.edit_text("введите номер!",reply_markup = kBackmebu)
 
 
-
+@admin.callback_query(F.data == "убрать сообщение")
+async def reg_grope(callback: CallbackQuery):
+    await callback.message.delete()
 
 
 
@@ -193,3 +195,5 @@ kfunckadmin_SS=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=
                                               [InlineKeyboardButton(text="удалить ученика",callback_data="удалить ученика")],
                                               [InlineKeyboardButton(text="сделать админом",callback_data="сделать админом")],
                                               [InlineKeyboardButton(text="back",callback_data="menu")]])
+
+udal_soob=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="убрать сообщение",callback_data="убрать сообщение")]])

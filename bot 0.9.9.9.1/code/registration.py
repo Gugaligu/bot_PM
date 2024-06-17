@@ -78,11 +78,6 @@ async def reg_grope(callback: CallbackQuery, state: FSMContext):
         await callback.message.edit_text("введите название группы в скобках\nпример:(PM)", reply_markup=sozd_grop)
 
 
-@registration.callback_query(F.data=="+ДОБ ГРУППУ")
-async def reg_grope(callback: CallbackQuery, state: FSMContext):
-    await state.clear()
-    await state.set_state(set_grop.grope)
-    await callback.message.edit_text("введите название группы в скобках\nпример:(PM)",reply_markup=sozd_grop)
 
 @registration.message(set_grop.grope)
 async def freg_name(message: Message, state: FSMContext):

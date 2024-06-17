@@ -4,9 +4,9 @@ db = sqlite3.connect("../data/db.db")
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            InlineKeyboardMarkup,InlineKeyboardButton)
 
-def flevel_admin(id):
+def flevel_admin(tg_id):
     cursor = db.cursor()
-    res = cursor.execute("""SELECT admin From user WHERE tg_id=(?)""", (id,)).fetchone()
+    res = cursor.execute("""SELECT admin From user WHERE tg_id=(?)""", (tg_id,)).fetchone()
     if res==None:
         return 0
     return res[0]
@@ -17,14 +17,14 @@ def level_dly_menu(level,c):
         return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-"+str(c))),
                                                         InlineKeyboardButton(text="изменить",callback_data="изменить"),
                                                         InlineKeyboardButton(text="->", callback_data=(">-"+str(c)))],
-                                                [InlineKeyboardButton(text="создать вопросы", callback_data="создать вопросы vopr")],
+                                                     [InlineKeyboardButton(text="вопросы",callback_data="vopr_v_raspis")],
                                                         [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
             inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-" + str(c))),
                               InlineKeyboardButton(text="Отмена",callback_data="menu"),
                               InlineKeyboardButton(text="->", callback_data=(">-" + str(c)))],
-                                [InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")]])
+                                [InlineKeyboardButton(text="вопросы",callback_data="vopr_v_raspis")]])
 
 def vivod_ras(ras):
     return f"""--------------ПОНЕДЕЛЬНИК--------------
