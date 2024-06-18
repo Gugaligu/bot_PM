@@ -20,6 +20,14 @@ class voprstate(StatesGroup):
     count_vopr = State()
     photo_id = State()
 
+class voprvibral(StatesGroup):
+    vopr= State()
+    urok= State()
+class voprdelete(StatesGroup):
+    vopr= State()
+    urok= State()
+
+
 @voprosik.callback_query(F.data=="vopr_v_raspis")
 async def rasp(callback: CallbackQuery,state:FSMContext):
     await callback.message.edit_text("выберите",reply_markup=vopr_v_raspis(flevel_admin(callback.message.chat.id)))
@@ -105,6 +113,52 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
                                         reply_markup=vibor_vopr(callback.data[1:]),
                                         caption=cap
                     )
+    await state.clear()
+    await state.set_state(voprvibral.urok)
+    await state.update_data(urok=callback.data[1:])
+    await state.set_state(voprvibral.vopr)
+
+@voprosik.callback_query(voprvibral.vopr)
+async def rasp(callback: CallbackQuery,state:FSMContext):
+    date1 = await state.get_data()
+    cursor = db.cursor()
+    vibral = cursor.execute("""SELECT chelovec From vopr WHERE vopros=(?) and urok=(?)""", (int(callback.data),str(date1["urok"]),)).fetchone()
+    cursor = db.cursor()
+    name = cursor.execute("""SELECT name From user WHERE tg_id=(?)""", (int(callback.message.chat.id),)).fetchone()
+    #вытащил из массивов
+    name2 = name[0]
+    vibral2 = vibral[0]
+    if vibral2==None:
+        vibral2=""
+    print(vibral[0],name)
+    # он выбирал уже?
+    if name2 in vibral2:
+        #удалил из списка
+        nameminus=vibral2.replace((name2+", "),"")
+        cursor = db.cursor()
+        udal = cursor.execute("""UPDATE vopr SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
+                              (nameminus,int(callback.data),str(date1["urok"]),)).fetchone()
+        db.commit()
+    else:
+        #добавил в список
+        nameplus = vibral2+name2+", "
+        cursor = db.cursor()
+        dobav = cursor.execute("""UPDATE vopr SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
+                              (nameplus, int(callback.data), str(date1["urok"]),)).fetchone()
+        db.commit()
+    # обновляю список
+    cursor = db.cursor()
+    caption_ = cursor.execute("""SELECT vopros,chelovec From vopr WHERE urok=(?)""",
+                              (str(date1["urok"]),)).fetchall()
+    cap = "список:\n"
+    print(caption_)
+    for vopr in caption_:
+        cap += f"{vopr[0]}:{vopr[1]}\n"
+    cap += "\nвыберите:"
+    cap = cap.replace("None", "")
+    print(cap)
+    await callback.message.edit_caption(caption=cap,reply_markup=vibor_vopr(date1["urok"]))
+
 
 
 @voprosik.callback_query(F.data=="вопросы vopr")
@@ -114,6 +168,30 @@ async def rasp(callback: CallbackQuery):
 @voprosik.callback_query(F.data == "убрать сообщение")
 async def reg_grope(callback: CallbackQuery):
     await callback.message.delete()
+
+@voprosik.callback_query(F.data == "удалить вопрос")
+async def reg_grope(callback: CallbackQuery,state:FSMContext):
+    await state.set_state(voprdelete.urok)
+    await callback.message.edit_text("выберите вопросы которые нужно удалить",
+                                     reply_markup=gen_sozdanie_voprosi_delete())
+
+@voprosik.callback_query(voprdelete.urok)
+async def reg_grope(callback: CallbackQuery,state:FSMContext):
+    cursor = db.cursor()
+    res1 = cursor.execute("""delete FROM vopr WHERE urok=(?)""", (callback.data,))
+    db.commit()
+    await callback.message.edit_text("вопрос удален",
+                                     reply_markup=kBackmebu)
+    await state.clear()
+
+
+
+
+
+
+
+
+
 
 
 
@@ -127,8 +205,9 @@ def flevel_admin(tg_id):
 
 def vopr_v_raspis(level):
     if level>1:
-        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="создать вопросы", callback_data="создать вопросы vopr")],
-                                                     [InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")],
+        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")],
+                                                     [InlineKeyboardButton(text="создать вопросы",callback_data="создать вопросы vopr")],
+                                                     [InlineKeyboardButton(text="удалить вопросы",callback_data="удалить вопрос")],
                                                         [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
@@ -151,18 +230,34 @@ def fgen_spisok_para(tg_id,nedel,days):
     gen_urok = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_urok
 
+
+def gen_sozdanie_voprosi_delete():
+    # cursor = db.cursor()
+    # grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    cursor = db.cursor()
+    res = cursor.execute(f"Select get_data,urok FROM vopr").fetchall()
+    c = []
+    b=[]
+    for g in res:
+        if g[1] in b:
+            continue
+        b.append(g[1])
+        c.append([InlineKeyboardButton(text=f"{g[0]} неделя {g[1]}", callback_data=g[1])])
+    c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
+    gen_vopr = InlineKeyboardMarkup(inline_keyboard=c)
+    return gen_vopr
 def gen_sozdanie_voprosi():
     # cursor = db.cursor()
     # grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
     cursor = db.cursor()
-    res = cursor.execute(f"Select urok FROM vopr").fetchall()
+    res = cursor.execute(f"Select get_data,urok FROM vopr").fetchall()
     c = []
     b=[]
     for g in res:
-        if g[0] in b:
+        if g[1] in b:
             continue
-        b.append(g[0])
-        c.append([InlineKeyboardButton(text=g[0], callback_data="?"+g[0])])
+        b.append(g[1])
+        c.append([InlineKeyboardButton(text=f"{g[0]} неделя {g[1]}", callback_data="?"+g[1])])
     c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
     gen_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_vopr
@@ -193,9 +288,15 @@ def vibor_vopr(urok):
     cursor = db.cursor()
     vop = cursor.execute(f"Select vopros FROM vopr where urok=(?)",(str(urok),)).fetchall()
     c = []
-    print(vop)
+    b =[]
+    re=0
     for g in vop:
-        c.append([InlineKeyboardButton(text=str(g[0]), callback_data=str(g[0]))])
+        re+=1
+        b.append((InlineKeyboardButton(text=str(g[0]), callback_data=str(g[0]))))
+        if re==5:
+            c.append(b)
+            b=[]
+            re=0
     c.append([InlineKeyboardButton(text="убрать сообщение",callback_data="убрать сообщение")])
     vibor_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return vibor_vopr
