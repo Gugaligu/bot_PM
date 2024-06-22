@@ -31,12 +31,12 @@ class voprdelete(StatesGroup):
 @voprosik.callback_query(F.data=="vopr_v_raspis")
 async def rasp(callback: CallbackQuery,state:FSMContext):
     await callback.message.edit_text("выберите",reply_markup=vopr_v_raspis(flevel_admin(callback.message.chat.id)))
+    t = callback.message.text
+    await state.set_state(voprstate.nedel)
+    await state.update_data(nedel=t[-9:-7])
 
 @voprosik.callback_query(F.data=="создать вопросы vopr")
 async def rasp(callback: CallbackQuery,state:FSMContext):
-    t=callback.message.text
-    await state.set_state(voprstate.nedel)
-    await state.update_data(nedel=t[-9:-7])
     if count_vopr_in_table(callback.message.chat.id)<=3000:
         await callback.message.edit_text(f"выберите день\n"
         f"Ваше доступное количество вопросов({count_vopr_in_table(callback.message.chat.id)} из 3000)", reply_markup=day)
@@ -101,16 +101,19 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
 async def rasp(callback: CallbackQuery,state:FSMContext):
     await callback.answer(callback.data[1:])
     cursor = db.cursor()
-    photo_ = cursor.execute("""SELECT photo From vopr WHERE urok=(?)""", (str(callback.data[1:]),)).fetchone()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={callback.message.chat.id}").fetchone())[0]
+    grope += "_vopr"
     cursor = db.cursor()
-    caption_ = cursor.execute("""SELECT vopros,chelovec From vopr WHERE urok=(?)""", (str(callback.data[1:]),)).fetchall()
+    photo_ = cursor.execute(f"""SELECT photo From {grope} WHERE urok=(?)""", (str(callback.data[1:]),)).fetchone()
+    cursor = db.cursor()
+    caption_ = cursor.execute(f"""SELECT vopros,chelovec From {grope} WHERE urok=(?)""", (str(callback.data[1:]),)).fetchall()
     cap="список:\n"
     for vopr in caption_:
         cap+=f"{vopr[0]}:{vopr[1]}\n"
     cap+="\nвыберите:"
     cap=cap.replace("None","")
     await callback.message.answer_photo(photo=photo_[0],
-                                        reply_markup=vibor_vopr(callback.data[1:]),
+                                        reply_markup=vibor_vopr(callback.data[1:],callback.message.chat.id),
                                         caption=cap
                     )
     await state.clear()
@@ -122,7 +125,10 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
 async def rasp(callback: CallbackQuery,state:FSMContext):
     date1 = await state.get_data()
     cursor = db.cursor()
-    vibral = cursor.execute("""SELECT chelovec From vopr WHERE vopros=(?) and urok=(?)""", (int(callback.data),str(date1["urok"]),)).fetchone()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={callback.message.chat.id}").fetchone())[0]
+    grope += "_vopr"
+    cursor = db.cursor()
+    vibral = cursor.execute(f"""SELECT chelovec From {grope} WHERE vopros=(?) and urok=(?)""", (int(callback.data),str(date1["urok"]),)).fetchone()
     cursor = db.cursor()
     name = cursor.execute("""SELECT name From user WHERE tg_id=(?)""", (int(callback.message.chat.id),)).fetchone()
     #вытащил из массивов
@@ -136,19 +142,19 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
         #удалил из списка
         nameminus=vibral2.replace((name2+", "),"")
         cursor = db.cursor()
-        udal = cursor.execute("""UPDATE vopr SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
+        udal = cursor.execute(f"""UPDATE {grope} SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
                               (nameminus,int(callback.data),str(date1["urok"]),)).fetchone()
         db.commit()
     else:
         #добавил в список
         nameplus = vibral2+name2+", "
         cursor = db.cursor()
-        dobav = cursor.execute("""UPDATE vopr SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
+        dobav = cursor.execute(f"""UPDATE {grope} SET chelovec=(?) WHERE vopros=(?) and urok=(?)""",
                               (nameplus, int(callback.data), str(date1["urok"]),)).fetchone()
         db.commit()
     # обновляю список
     cursor = db.cursor()
-    caption_ = cursor.execute("""SELECT vopros,chelovec From vopr WHERE urok=(?)""",
+    caption_ = cursor.execute(f"""SELECT vopros,chelovec From {grope} WHERE urok=(?)""",
                               (str(date1["urok"]),)).fetchall()
     cap = "список:\n"
     print(caption_)
@@ -157,13 +163,13 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
     cap += "\nвыберите:"
     cap = cap.replace("None", "")
     print(cap)
-    await callback.message.edit_caption(caption=cap,reply_markup=vibor_vopr(date1["urok"]))
+    await callback.message.edit_caption(caption=cap,reply_markup=vibor_vopr(date1["urok"],callback.message.chat.id))
 
 
 
 @voprosik.callback_query(F.data=="вопросы vopr")
 async def rasp(callback: CallbackQuery):
-    await callback.message.edit_text("выберите вопросы", reply_markup=gen_sozdanie_voprosi())
+    await callback.message.edit_text("выберите вопросы", reply_markup=gen_sozdanie_voprosi(callback.message.chat.id))
 
 @voprosik.callback_query(F.data == "убрать сообщение")
 async def reg_grope(callback: CallbackQuery):
@@ -173,12 +179,15 @@ async def reg_grope(callback: CallbackQuery):
 async def reg_grope(callback: CallbackQuery,state:FSMContext):
     await state.set_state(voprdelete.urok)
     await callback.message.edit_text("выберите вопросы которые нужно удалить",
-                                     reply_markup=gen_sozdanie_voprosi_delete())
+                                     reply_markup=gen_sozdanie_voprosi_delete(callback.message.chat.id))
 
 @voprosik.callback_query(voprdelete.urok)
 async def reg_grope(callback: CallbackQuery,state:FSMContext):
     cursor = db.cursor()
-    res1 = cursor.execute("""delete FROM vopr WHERE urok=(?)""", (callback.data,))
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={callback.message.chat.id}").fetchone())[0]
+    grope += "_vopr"
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""delete FROM {grope} WHERE urok=(?)""", (callback.data,))
     db.commit()
     await callback.message.edit_text("вопрос удален",
                                      reply_markup=kBackmebu)
@@ -218,9 +227,10 @@ def vopr_v_raspis(level):
 def fgen_spisok_para(tg_id,nedel,days):
     cursor = db.cursor()
     grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope1 = grope+"_rasp"
     cursor = db.cursor()
     print(grope, nedel, days)
-    res = cursor.execute(f"Select para FROM raspisanie WHERE (grope='{grope}' and nedel={nedel} and day='{days}')").fetchall()
+    res = cursor.execute(f"Select para FROM {grope1} WHERE grope='{grope}' and nedel={nedel} and day='{days}'").fetchall()
     print(res)
     c = []
     for g in res:
@@ -231,11 +241,12 @@ def fgen_spisok_para(tg_id,nedel,days):
     return gen_urok
 
 
-def gen_sozdanie_voprosi_delete():
-    # cursor = db.cursor()
-    # grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+def gen_sozdanie_voprosi_delete(tg_id):
     cursor = db.cursor()
-    res = cursor.execute(f"Select get_data,urok FROM vopr").fetchall()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope += "_vopr"
+    cursor = db.cursor()
+    res = cursor.execute(f"Select get_data,urok FROM {grope}").fetchall()
     c = []
     b=[]
     for g in res:
@@ -246,11 +257,12 @@ def gen_sozdanie_voprosi_delete():
     c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
     gen_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_vopr
-def gen_sozdanie_voprosi():
-    # cursor = db.cursor()
-    # grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+def gen_sozdanie_voprosi(tg_id):
     cursor = db.cursor()
-    res = cursor.execute(f"Select get_data,urok FROM vopr").fetchall()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope += "_vopr"
+    cursor = db.cursor()
+    res = cursor.execute(f"Select get_data,urok FROM {grope}").fetchall()
     c = []
     b=[]
     for g in res:
@@ -263,30 +275,35 @@ def gen_sozdanie_voprosi():
     return gen_vopr
 def sozdat_vopr(nedel,urok,count,photo,tg_id):
     cursor = db.cursor()
-    grope = cursor.execute("""SELECT grope From user WHERE tg_id=(?)""", (tg_id,)).fetchone()
+    grope = cursor.execute("""SELECT grope From user WHERE tg_id=(?)""", (tg_id,)).fetchone()[0]
+    cursor = db.cursor()
+    grope2 = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope2 += "_vopr"
     urok= f"{urok} {str(count)} вопросов"
     for i in range(int(count)):
         print(i)
         i+=1
         cursor = db.cursor()
-        res = cursor.execute("""INSERT INTO vopr(get_data,urok,vopros,photo,grope) VALUES((?),(?),(?),(?),(?))""",
-                             (int(nedel),str(urok),i,str(photo),str(grope)))
+        res = cursor.execute(f"""INSERT INTO {grope2}(get_data,urok,vopros,photo,grope) VALUES((?),(?),(?),(?),(?))""",
+                             (int(nedel),str(urok),i,str(photo),str(grope),))
 
     db.commit()
     pass
 def count_vopr_in_table(tg_id):
     cursor = db.cursor()
-    grope = cursor.execute("""SELECT grope From user WHERE tg_id=(?)""", (tg_id,)).fetchone()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope += "_vopr"
     cursor = db.cursor()
-    count = cursor.execute("""SELECT COUNT (*) FROM vopr""").fetchone()
+    count = cursor.execute(f"""SELECT COUNT (*) FROM {grope}""").fetchone()
     return count[0]
 
 
-def vibor_vopr(urok):
-    # cursor = db.cursor()
-    # grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+def vibor_vopr(urok,tg_id):
     cursor = db.cursor()
-    vop = cursor.execute(f"Select vopros FROM vopr where urok=(?)",(str(urok),)).fetchall()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={tg_id}").fetchone())[0]
+    grope+="_vopr"
+    cursor = db.cursor()
+    vop = cursor.execute(f"Select vopros FROM {grope} where urok=(?)",(str(urok),)).fetchall()
     c = []
     b =[]
     re=0

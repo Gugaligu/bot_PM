@@ -89,8 +89,11 @@ async def freg_name(message: Message, state: FSMContext):
 async def reg_grope(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     print(data["grope"])
-    await callback.message.edit_text("заявка отправлена на рассмотрение и будет принята в течении дня\n(минимально час) вам прийдет уведомление",reply_markup=kBackmebu)
-    await bot1.send_message(chat_id="1442714637", text=f'создать группу{data["grope"]} от {callback.message.chat.username} id#{callback.message.chat.id}#',reply_markup=prow_sozd)
+    if (")" in data["grope"]) and ("(" in data["grope"]):
+        await callback.message.edit_text("заявка отправлена на рассмотрение и будет принята в течении дня\n(минимально час) вам прийдет уведомление",reply_markup=kBackmebu)
+        await bot1.send_message(chat_id="1442714637", text=f'создать группу{data["grope"]} от {callback.message.chat.username} id#{callback.message.chat.id}#',reply_markup=prow_sozd)
+    else:
+        await callback.message.edit_text("В СКОБКАХ ГРУППУ!",reply_markup=kBackmebu)
     await state.clear()
 
 
@@ -98,11 +101,8 @@ async def reg_grope(callback: CallbackQuery, state: FSMContext):
 async def reg_grope(callback: CallbackQuery):
     t=callback.message.text
     fsozdat_gr_po_razr(t[t.find("(")+1:t.find(")")])
-    print(1)
     c = callback.message.text
-    print(c)
     ct=c[c.find("#")+1:c.rfind("#")]
-    print(ct)
     await bot1.send_message(chat_id=str(ct),
                             text=f'группа создана!',
                             reply_markup=udal_soob)
@@ -178,12 +178,33 @@ def fgen_spisok_grop():
 def fsozdat_gr_po_razr(grope):
     cursor = db.cursor()
     res = cursor.execute(f"""INSERT INTO spisokgrop(gr) VALUES("{grope}")""")
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""CREATE TABLE {grope}_rasp (
+                                            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                                            nedel    INTEGER NOT NULL,
+                                            day      TEXT    NOT NULL,
+                                            para     TEXT    NOT NULL
+                                                                     DEFAULT [ ],
+                                            grope    TEXT    NOT NULL,
+                                            nomerpar INTEGER NOT NULL,
+                                            data     TEXT    NOT NULL
+                                                                        );""")
+    cursor = db.cursor()
+    res2 = cursor.execute(f"""CREATE TABLE {grope}_vopr (
+                                            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                                            get_data INTEGER NOT NULL,
+                                            urok     TEXT    NOT NULL,
+                                            vopros   INTEGER,
+                                            chelovec TEXT,
+                                            photo    TEXT    NOT NULL,
+                                            grope    TEXT    NOT NULL
+                                                                        );""")
     db.commit()
 
 kreg = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="регистрация",callback_data="reg")]])
 
 kreg_name = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить имя",callback_data="reg_name")],
-                                                 [InlineKeyboardButton(text="back",callback_data="menu")]])
+                                                 [InlineKeyboardButton(text="Назад",callback_data="menu")]])
 
 kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти",callback_data="menu")]])
 

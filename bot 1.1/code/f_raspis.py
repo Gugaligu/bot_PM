@@ -64,40 +64,55 @@ def vivod_ras(ras):
     РАСПИСАНИЕ {ras[0][1]} НЕДЕЛИ
 """
 def raspisne(id_tg):
-    gr = grope(id_tg)
     cursor = db.cursor()
-    res1 = cursor.execute("""Select * FROM raspisanie WHERE grope=(?) and nedel=(?)""", (gr,kakaya_shas_nedel(gr),)).fetchall()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    gr=grope
+    grope += "_rasp"
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""Select * FROM {grope} WHERE grope=(?) and nedel=(?)""", (gr,kakaya_shas_nedel(gr,id_tg),)).fetchall()
     print(res1)
     return res1
 
 def raspisnie_strelochki(id_tg,znach):
-    gr = grope(id_tg)
     cursor = db.cursor()
-    res1 = cursor.execute("""Select * FROM raspisanie WHERE grope=(?) and nedel=(?)""", (gr,znach,)).fetchall()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    gr=grope
+    grope += "_rasp"
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""Select * FROM {grope} WHERE grope=(?) and nedel=(?)""", (gr,znach,)).fetchall()
     return res1
 
-def kakaya_shas_nedel(gr):
+def kakaya_shas_nedel(gr,id_tg):
     cursor = db.cursor()
-    res1 = cursor.execute("""Select nedel FROM raspisanie WHERE grope=(?) and data=(?)""", (str(gr),str(datetime.date.today()),)).fetchone()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    grope += "_rasp"
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""Select nedel FROM {grope} WHERE grope=(?) and data=(?)""", (str(gr),str(datetime.date.today()),)).fetchone()
     if res1!=None:
         return res1[0]
     return res1
 
 def del_in_groupe(id_tg):
-    gr=grope(id_tg)
     cursor = db.cursor()
-    res1 = cursor.execute("""delete FROM raspisanie WHERE grope=(?)""", (gr,))
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    gr=grope
+    grope += "_rasp"
+    cursor = db.cursor()
+    res1 = cursor.execute(f"""delete FROM {grope} WHERE grope=(?)""", (gr,))
     db.commit()
 
 
 def gen_ned(text,id_tg):#создать расписание
+    cursor = db.cursor()
+    grope1 = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    grope1 += "_rasp"
     text.lower()
     text = text[text.find("(") + 1:text.find(")")]
     mass = text.split("-")
     y=int(mass[0])
     m=int(mass[1])
     d=int(mass[2])
-    gr=grope(id_tg)
+    gr=grope(str(id_tg))
     #делаем дату начала с откатом до понедельника чтобы выводилось
     data_nach = datetime.date(y,m,d) - datetime.timedelta(days=n_day(datetime.date(y,m,d)))
     ned = 1
@@ -113,7 +128,7 @@ def gen_ned(text,id_tg):#создать расписание
         for nomerpar in range(vosk):
             nomerpar+=1
             cursor = db.cursor()
-            res = cursor.execute("""Insert into raspisanie(nedel,day,grope,nomerpar,data) VALUES((?),(?),(?),(?),(?))""",
+            res = cursor.execute(f"""Insert into {grope1}(nedel,day,grope,nomerpar,data) VALUES((?),(?),(?),(?),(?))""",
                                   (int(ned),str(t_day(n_day(data_for))),gr,int(nomerpar),str(data_for)))
             db.commit()
 
@@ -134,7 +149,10 @@ def gen_ned(text,id_tg):#создать расписание
 
 
 def dobavit_paru(text,id_tg):#UPDATE данные в таблице
-    gr = grope(id_tg)
+    cursor = db.cursor()
+    grope = (cursor.execute(f"Select grope FROM user where tg_id={id_tg}").fetchone())[0]
+    gr=grope
+    grope += "_rasp"
     text.lower()
     if "одна" in text:
         text=text[text.find("(")+1:text.find(")")].replace(" ","")
@@ -144,7 +162,7 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
             mass.pop(3)
             for nedel in range(int(mass[3][0]),int(mass[3][1])+1):
                 cursor = db.cursor()
-                res = cursor.execute("""UPDATE raspisanie SET para=(?) 
+                res = cursor.execute(f"""UPDATE {grope} SET para=(?) 
                                          WHERE grope=(?) and 
                                              nedel=(?) and 
                                              day=(?) and 
@@ -152,7 +170,7 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
             db.commit()
         else:
             cursor = db.cursor()
-            res = cursor.execute("""UPDATE raspisanie SET para=(?) 
+            res = cursor.execute(f"""UPDATE {grope} SET para=(?) 
                                                          WHERE grope=(?) and 
                                                          nedel=(?) and 
                                                          day=(?) and 
@@ -169,7 +187,7 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
                 mass2.pop(3)
                 for nedel in range(int(mass2[3][0]), int(mass2[3][1]) + 1):
                     cursor = db.cursor()
-                    res = cursor.execute("""UPDATE raspisanie SET para=(?)
+                    res = cursor.execute(f"""UPDATE {grope} SET para=(?)
                                                      WHERE grope=(?) and
                                                      nedel=(?) and
                                                      day=(?) and
@@ -177,7 +195,7 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
                 db.commit()
             else:
                 cursor = db.cursor()
-                res = cursor.execute("""UPDATE raspisanie SET para=(?)
+                res = cursor.execute(f"""UPDATE {grope} SET para=(?)
                                                                  WHERE grope=(?) and
                                                                  nedel=(?) and
                                                                  day=(?) and
