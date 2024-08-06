@@ -19,7 +19,7 @@ async def rasp(callback: CallbackQuery):
     ras= f_raspis.raspisne(callback.message.chat.id)
     c=0
     if ras=="zero":
-        await callback.message.edit_text("лето!", reply_markup=kBackmebu)
+        await callback.message.edit_text("лето!", reply_markup=kkBackmebu)
     elif len(ras)!=0:
         await callback.answer("вы выбрали раписание")
         c=str(ras[0][1])
@@ -232,3 +232,4 @@ kizmen_rasp=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="П
 kizmenit=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="изменить расписание🗓",callback_data="изменить расписание")],
                                                     [InlineKeyboardButton(text="удалить расписание🗑",callback_data="удалить расписание")],
                                                         [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
+kkBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="удалить расписание🗑",callback_data="удалить расписание")],[InlineKeyboardButton(text="Выйти↩️", callback_data="menu")]])
