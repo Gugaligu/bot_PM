@@ -63,7 +63,7 @@ def flevel_admin(id):
 def fmenu(id,first_name,username):
     cursor = db.cursor()
     res = cursor.execute("""SELECT * From user WHERE tg_id=(?)""", (id,)).fetchone()
-    return "Пользователь\n" \
+    return "Пользователь👤\n" \
            f"Имя:{res[2]}\n" \
            f"Имя в тг:{first_name}({username})\n" \
            f"группа:{res[4]}\n" \
@@ -86,19 +86,16 @@ def fnazvanie_admina(id):
 
 kreg = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="регистрация",callback_data="reg")]])
 
-kmenu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание",callback_data="расписание")],
-                                              [InlineKeyboardButton(text="дней до стипендии",callback_data="стипендия")],
-                                              [InlineKeyboardButton(text="ивенты",callback_data="ивенты")],
-                                              [InlineKeyboardButton(text="полезные документы",callback_data="документы")]])
+kmenu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание🗓",callback_data="расписание")],
+                                              [InlineKeyboardButton(text="дней до стипендии💸",callback_data="стипендия")],
+                                              [InlineKeyboardButton(text="полезные документы📁",callback_data="документы")]])
 
-kadmin_menu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание",callback_data="расписание")],
-                                              [InlineKeyboardButton(text="дней до стипендии",callback_data="стипендия")],
-                                              [InlineKeyboardButton(text="ивенты",callback_data="ивенты")],
-                                              [InlineKeyboardButton(text="полезные документы",callback_data="документы")],
-                                              [InlineKeyboardButton(text="Меню Админа",callback_data="Меню Админа")]])
+kadmin_menu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание🗓",callback_data="расписание")],
+                                              [InlineKeyboardButton(text="дней до стипендии💸",callback_data="стипендия")],
+                                              [InlineKeyboardButton(text="полезные документы📁",callback_data="документы")],
+                                              [InlineKeyboardButton(text="Меню Админа👤",callback_data="Меню Админа")]])
 
-kadmin_menu_ss = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание",callback_data="расписание")],
-                                              [InlineKeyboardButton(text="дней до стипендии",callback_data="стипендия")],
-                                              [InlineKeyboardButton(text="ивенты",callback_data="ивенты")],
-                                              [InlineKeyboardButton(text="полезные документы",callback_data="документы")],
-                                              [InlineKeyboardButton(text="Меню Админа SS",callback_data="Меню Админа SS")]])
+kadmin_menu_ss = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="расписание🗓",callback_data="расписание")],
+                                              [InlineKeyboardButton(text="дней до стипендии💸",callback_data="стипендия")],
+                                              [InlineKeyboardButton(text="полезные документы📁",callback_data="документы")],
+                                              [InlineKeyboardButton(text="Меню Админа SS👤",callback_data="Меню Админа SS")]])

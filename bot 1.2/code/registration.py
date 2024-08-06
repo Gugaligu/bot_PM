@@ -170,7 +170,7 @@ def fgen_spisok_grop():
     c = []
     for g in res:
         c.append([InlineKeyboardButton(text=g[0], callback_data=g[0])])
-    c.append([InlineKeyboardButton(text="+", callback_data="+ДОБ ГРУППУ")])
+    c.append([InlineKeyboardButton(text="➕", callback_data="+ДОБ ГРУППУ")])
     print(c)
     kgrope = InlineKeyboardMarkup(inline_keyboard=c)
     return kgrope
@@ -203,13 +203,13 @@ def fsozdat_gr_po_razr(grope):
 
 kreg = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="регистрация",callback_data="reg")]])
 
-kreg_name = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить имя",callback_data="reg_name")],
-                                                 [InlineKeyboardButton(text="Назад",callback_data="menu")]])
+kreg_name = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить имя ✅",callback_data="reg_name")],
+                                                 [InlineKeyboardButton(text="Назад ↩️",callback_data="menu")]])
 
-kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти",callback_data="menu")]])
+kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти ↩️",callback_data="menu")]])
 
-sozd_grop = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="отправить на проверку",callback_data="отправить на проверку")],
-                                                 [InlineKeyboardButton(text="back",callback_data="menu")]])
-prow_sozd= InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="разрешить",callback_data="разрешить prow sozd")],
-                                                 [InlineKeyboardButton(text="запретить",callback_data="запретить prow sozd")]])
-udal_soob=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="убрать сообщение",callback_data="убрать сообщение")]])
+sozd_grop = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="отправить на проверку✅",callback_data="отправить на проверку")],
+                                                 [InlineKeyboardButton(text="назад ↩️",callback_data="menu")]])
+prow_sozd= InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="разрешить✅",callback_data="разрешить prow sozd")],
+                                                 [InlineKeyboardButton(text="запретить❌",callback_data="запретить prow sozd")]])
+udal_soob=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="убрать сообщение❌",callback_data="убрать сообщение")]])

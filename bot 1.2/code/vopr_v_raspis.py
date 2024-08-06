@@ -214,14 +214,14 @@ def flevel_admin(tg_id):
 
 def vopr_v_raspis(level):
     if level>1:
-        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")],
-                                                     [InlineKeyboardButton(text="создать вопросы",callback_data="создать вопросы vopr")],
-                                                     [InlineKeyboardButton(text="удалить вопросы",callback_data="удалить вопрос")],
-                                                        [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="вопросы❔",callback_data="вопросы vopr")],
+                                                     [InlineKeyboardButton(text="создать вопросы➕",callback_data="создать вопросы vopr")],
+                                                     [InlineKeyboardButton(text="удалить вопросы🗑",callback_data="удалить вопрос")],
+                                                        [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="вопросы",callback_data="вопросы vopr")],
-                             [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+            inline_keyboard=[[InlineKeyboardButton(text="вопросы❔",callback_data="вопросы vopr")],
+                             [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
 
 
 def fgen_spisok_para(tg_id,nedel,days):
@@ -235,7 +235,7 @@ def fgen_spisok_para(tg_id,nedel,days):
     c = []
     for g in res:
         c.append([InlineKeyboardButton(text=g[0], callback_data="#"+g[0])])
-    c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
+    c.append([InlineKeyboardButton(text="Отмена↩️", callback_data="menu")])
     print(c)
     gen_urok = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_urok
@@ -254,7 +254,7 @@ def gen_sozdanie_voprosi_delete(tg_id):
             continue
         b.append(g[1])
         c.append([InlineKeyboardButton(text=f"{g[0]} неделя {g[1]}", callback_data=g[1])])
-    c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
+    c.append([InlineKeyboardButton(text="Отмена↩️", callback_data="menu")])
     gen_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_vopr
 def gen_sozdanie_voprosi(tg_id):
@@ -270,7 +270,7 @@ def gen_sozdanie_voprosi(tg_id):
             continue
         b.append(g[1])
         c.append([InlineKeyboardButton(text=f"{g[0]} неделя {g[1]}", callback_data="?"+g[1])])
-    c.append([InlineKeyboardButton(text="Отмена", callback_data="menu")])
+    c.append([InlineKeyboardButton(text="Отмена↩️", callback_data="menu")])
     gen_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return gen_vopr
 def sozdat_vopr(nedel,urok,count,photo,tg_id):
@@ -314,7 +314,7 @@ def vibor_vopr(urok,tg_id):
             c.append(b)
             b=[]
             re=0
-    c.append([InlineKeyboardButton(text="убрать сообщение",callback_data="убрать сообщение")])
+    c.append([InlineKeyboardButton(text="убрать сообщение❌",callback_data="убрать сообщение")])
     vibor_vopr = InlineKeyboardMarkup(inline_keyboard=c)
     return vibor_vopr
 
@@ -327,8 +327,8 @@ day = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="поне
                                             [InlineKeyboardButton(text="пятница",callback_data="пятница vopr")],
                                             [InlineKeyboardButton(text="суббота",callback_data="суббота vopr")],
                                             [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
-kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти", callback_data="menu")]])
-pr_colvo_vopr = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить", callback_data="pr_colvo")],
-                                            [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
-prov_photo = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить", callback_data="pr_photo")],
-                                            [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти↩️", callback_data="menu")]])
+pr_colvo_vopr = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить✅", callback_data="pr_colvo")],
+                                            [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
+prov_photo = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="проверить✅", callback_data="pr_photo")],
+                                            [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])

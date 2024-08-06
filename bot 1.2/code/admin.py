@@ -160,8 +160,6 @@ async def Admin(callback: CallbackQuery,state:FSMContext):
         await callback.message.edit_text("статус выдан", reply_markup=kBackmebu)
         f_admin.fsdelat_adminom(data["number"])
         await bot1.send_message(f_admin.fpo_id_tg_id(data["number"]), 'вы стали админом!',reply_markup=udal_soob)
-        await asyncio.sleep(5)
-        await callback.message.delete()
         await state.clear()
     else:
         await state.clear()

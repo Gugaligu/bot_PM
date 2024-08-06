@@ -18,12 +18,13 @@ class raspisanie(StatesGroup):
 async def rasp(callback: CallbackQuery):
     ras= f_raspis.raspisne(callback.message.chat.id)
     c=0
-    if len(ras)!=0:
+    if ras=="zero":
+        await callback.message.edit_text("лето!", reply_markup=kBackmebu)
+    elif len(ras)!=0:
         await callback.answer("вы выбрали раписание")
         c=str(ras[0][1])
-    level = f_raspis.flevel_admin(callback.message.chat.id)
-    raspis_menu_strelka = f_raspis.level_dly_menu(level, c)
-    if len(ras)!=0:
+        level = f_raspis.flevel_admin(callback.message.chat.id)
+        raspis_menu_strelka = f_raspis.level_dly_menu(level, c)
         await callback.message.edit_text(f_raspis.vivod_ras(ras), reply_markup=raspis_menu_strelka)
     else:
         await callback.message.edit_text(f"расписания {f_raspis.grope(callback.message.chat.id)} несуществует создайте его", reply_markup=ksozdat_ras1)
@@ -214,20 +215,20 @@ async def rasp(callback: CallbackQuery,state:FSMContext):
     f_raspis.del_in_groupe(callback.message.chat.id)
 
 
-kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти", callback_data="menu")]])
+kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти↩️", callback_data="menu")]])
 
-ksozdat_ras1=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="создать расписание",callback_data="создать расписание нач")],
-                                                  [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+ksozdat_ras1=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="создать расписание➕",callback_data="создать расписание нач")],
+                                                  [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
 
-ksozdat_ras2=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="пров созд")],
-                                                  [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+ksozdat_ras2=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод✅",callback_data="пров созд")],
+                                                  [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
 
-kdel_raspis=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="УДАЛИТЬ",callback_data="пров удаление")],
-                                                  [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+kdel_raspis=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="УДАЛИТЬ🗑",callback_data="пров удаление")],
+                                                  [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
 
-kizmen_rasp=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод",callback_data="пров изменение")],
-                                                  [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+kizmen_rasp=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Проверить Ввод✅",callback_data="пров изменение")],
+                                                  [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
 
-kizmenit=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="изменить расписание",callback_data="изменить расписание")],
-                                                    [InlineKeyboardButton(text="удалить расписание",callback_data="удалить расписание")],
-                                                        [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+kizmenit=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="изменить расписание🗓",callback_data="изменить расписание")],
+                                                    [InlineKeyboardButton(text="удалить расписание🗑",callback_data="удалить расписание")],
+                                                        [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])

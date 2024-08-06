@@ -6,17 +6,20 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram import Bot
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
-                           InlineKeyboardMarkup,InlineKeyboardButton)
+                           InlineKeyboardMarkup, InlineKeyboardButton)
 from datetime import date
 import menu
+
 TOKEN_API = "6662629827:AAHoIxMjnrbtSLX2W7Pw3ARqbAjf_xq8QbI"
 bot1 = Bot(TOKEN_API)
-event = Router()
+docki = Router()
 
-@event.callback_query(F.data=="ивенты")
-async def ivent(callback: CallbackQuery):
-    await callback.answer("вы выбрали ивенты")
-    await callback.message.edit_text("Ивентов пока нет(")
+
+@docki.callback_query(F.data=="документы")
+async def dock(callback: CallbackQuery):
+    await callback.answer("вы выбрали полезные документы")
+    await callback.message.edit_text("полезных документов пока не загружено!")
     await callback.message.edit_reply_markup(reply_markup=kBackmebu)
 
-kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти",callback_data="menu")]])
+
+kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти↩️", callback_data="menu")]])

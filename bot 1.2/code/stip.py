@@ -53,4 +53,4 @@ def fstep_day():
                             +com)
     return stroke
 
-kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти",callback_data="menu")]])
+kBackmebu = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Выйти↩️",callback_data="menu")]])

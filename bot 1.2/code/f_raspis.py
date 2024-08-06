@@ -17,14 +17,14 @@ def level_dly_menu(level,c):
         return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-"+str(c))),
                                                         InlineKeyboardButton(text="изменить",callback_data="изменить"),
                                                         InlineKeyboardButton(text="->", callback_data=(">-"+str(c)))],
-                                                     [InlineKeyboardButton(text="вопросы",callback_data="vopr_v_raspis")],
-                                                        [InlineKeyboardButton(text="Отмена",callback_data="menu")]])
+                                                     [InlineKeyboardButton(text="вопросы❔",callback_data="vopr_v_raspis")],
+                                                        [InlineKeyboardButton(text="Отмена↩️",callback_data="menu")]])
     else:
         return InlineKeyboardMarkup(
             inline_keyboard=[[InlineKeyboardButton(text="<-", callback_data=("<-" + str(c))),
-                              InlineKeyboardButton(text="Отмена",callback_data="menu"),
+                              InlineKeyboardButton(text="Отмена↩️",callback_data="menu"),
                               InlineKeyboardButton(text="->", callback_data=(">-" + str(c)))],
-                                [InlineKeyboardButton(text="вопросы",callback_data="vopr_v_raspis")]])
+                                [InlineKeyboardButton(text="вопросы❔",callback_data="vopr_v_raspis")]])
 
 def vivod_ras(ras):
     return f"""--------------ПОНЕДЕЛЬНИК--------------
@@ -70,7 +70,15 @@ def raspisne(id_tg):
     grope += "_rasp"
     cursor = db.cursor()
     res1 = cursor.execute(f"""Select * FROM {grope} WHERE grope=(?) and nedel=(?)""", (gr,kakaya_shas_nedel(gr,id_tg),)).fetchall()
-    print(res1)
+    if kakaya_shas_nedel(gr,id_tg) == None:
+        cursor = db.cursor()
+        res = cursor.execute(f"""Select * FROM {grope} WHERE grope=(?)""",
+                              (gr,)).fetchone()
+        if res!=None:
+            return "zero"
+        else:
+            return res1
+
     return res1
 
 def raspisnie_strelochki(id_tg,znach):
