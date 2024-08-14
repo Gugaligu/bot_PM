@@ -162,53 +162,35 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
     gr=grope
     grope += "_rasp"
     text.lower()
-    if "одна" in text:
-        text=text[text.find("(")+1:text.find(")")].replace(" ","")
-        mass=text.split(",")
+    text = text[text.find("["):]
+    text = text.replace("]", "<>")
+    mass1 = text.split(">")
+    for i in mass1:
+        text = i[i.find("[") + 1:i.find("<")].replace(" ", "")
+        mass2 = text.split(",")
         if "-" in text:
-            mass.append(mass[3].split("-"))
-            mass.pop(3)
-            for nedel in range(int(mass[3][0]),int(mass[3][1])+1):
-                cursor = db.cursor()
-                res = cursor.execute(f"""UPDATE {grope} SET para=(?) 
-                                         WHERE grope=(?) and 
-                                             nedel=(?) and 
-                                             day=(?) and 
-                                             nomerpar=(?)""",(mass[0],gr,nedel,mass[2],mass[1]))
-            db.commit()
-        else:
-            cursor = db.cursor()
-            res = cursor.execute(f"""UPDATE {grope} SET para=(?) 
-                                                         WHERE grope=(?) and 
-                                                         nedel=(?) and 
-                                                         day=(?) and 
-                                                         nomerpar=(?)""", (mass[0], gr, mass[3], mass[2], mass[1]))
-            db.commit()
-    elif "несколько":
-        text=text[text.find("("):]
-        mass1=text.split("\n")
-        for i in mass1:
-            text = i[i.find("(") + 1:i.find(")")].replace(" ", "")
-            mass2 = text.split(",")
-            if "-" in text:
+            if len(mass2) > 1:
                 mass2.append(mass2[3].split("-"))
                 mass2.pop(3)
                 for nedel in range(int(mass2[3][0]), int(mass2[3][1]) + 1):
                     cursor = db.cursor()
                     res = cursor.execute(f"""UPDATE {grope} SET para=(?)
-                                                     WHERE grope=(?) and
-                                                     nedel=(?) and
-                                                     day=(?) and
-                                                     nomerpar=(?)""", (mass2[0], gr, nedel, mass2[2], mass2[1]))
+                                                                     WHERE grope=(?) and
+                                                                     nedel=(?) and
+                                                                     day=(?) and
+                                                                     nomerpar=(?)""",
+                                     (mass2[0], gr, nedel, mass2[2], mass2[1]))
                 db.commit()
-            else:
+        else:
+            if len(mass2)>1:
                 cursor = db.cursor()
                 res = cursor.execute(f"""UPDATE {grope} SET para=(?)
-                                                                 WHERE grope=(?) and
-                                                                 nedel=(?) and
-                                                                 day=(?) and
-                                                                 nomerpar=(?)""",
+                                                                             WHERE grope=(?) and
+                                                                             nedel=(?) and
+                                                                             day=(?) and
+                                                                             nomerpar=(?)""",
                                  (mass2[0], gr, mass2[3], mass2[2], mass2[1]))
+
                 db.commit()
 
 
