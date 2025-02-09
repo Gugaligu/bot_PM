@@ -1,4 +1,0 @@
-services:
-  telegram:
-    build:
-      context: ./code
