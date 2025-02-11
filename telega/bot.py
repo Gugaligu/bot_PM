@@ -4,6 +4,7 @@ from registration import registration
 from menu import menu
 from stip import stipend
 from vopr_v_raspis import voprosik
+from dock import docki
 from admin import admin
 from r_raspis import raspis
 
@@ -16,6 +17,7 @@ async def main():
     dp.include_router(registration)
     dp.include_router(stipend)
     dp.include_router(voprosik)
+    dp.include_router(docki)
     dp.include_router(admin)
     dp.include_router(raspis)
     await dp.start_polling(bot)
