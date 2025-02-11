@@ -147,7 +147,11 @@ async def reg_name(message: Message, state:FSMContext):
 @raspis.callback_query(F.data == "Автоматическое создание")
 async def Admin(callback: CallbackQuery,state:FSMContext):
     c = 0
-    if f_raspis.t_day(datetime.date(datetime.date.today().year, 9, 1).weekday()) == "воскресенье":
+    year_fix = datetime.date.today().year
+    if datetime.date.today().month < 6:
+        year_fix -= 1
+
+    if f_raspis.t_day(datetime.date(year_fix, 9, 1).weekday()) == "воскресенье":
         c = 1
     if datetime.date.today().month > 6:
         d = datetime.date(datetime.date.today().year, 9, 1 + c)
