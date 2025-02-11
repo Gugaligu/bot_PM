@@ -368,14 +368,26 @@ def dobavit_paru(text,id_tg):#UPDATE данные в таблице
         else:
             if len(mass2) > 1:
                 print(mass2, 2)
-        for nedel in mass2[-1]:
+                  
+        if len(mass2[-1]) > 0:
+            for nedel in mass2[-1]:
+                cursor = db.cursor()
+                res = cursor.execute(f"""UPDATE {grope} SET para=(?)
+                                         WHERE grope=(?) and
+                                         nedel=(?) and
+                                         day=(?) and
+                                         nomerpar=(?)""",
+                                     (str(mass2[0]), str(gr), int(nedel), str(mass2[2]), int(mass2[1])))
+        if len(mass2[-1]) == 0:
+            nedel = mass2[-1]
             cursor = db.cursor()
             res = cursor.execute(f"""UPDATE {grope} SET para=(?)
-                             WHERE grope=(?) and
-                             nedel=(?) and
-                             day=(?) and
-                             nomerpar=(?)""",
-                             (str(mass2[0]), str(gr), int(nedel), str(mass2[2]), int(mass2[1])))
+                                                     WHERE grope=(?) and
+                                                     nedel=(?) and
+                                                     day=(?) and
+                                                     nomerpar=(?)""",
+                                 (str(mass2[0]), str(gr), int(nedel), str(mass2[2]), int(mass2[1])))
+
             db.commit()
 
 
